@@ -1,0 +1,20 @@
+name: main
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */3 * * *"
+concurrency:
+  group: main
+jobs:
+  main:
+    name: main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python main.py > /dev/null 2>&1 && sort -t . -n -k 1,1 ok.txt > proxylist.txt
+      - run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add proxylist.txt
+          git commit -m "Update Proxylist"
+          git push
